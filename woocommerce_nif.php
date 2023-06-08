@@ -3,9 +3,9 @@
  * Plugin Name: NIF (Num. de Contribuinte Angolano) for WooCommerce
  * Plugin URI: https://github.com/edgarberlinck/
  * Description: This plugin adds the Angola VAT identification number (NIF/NIPC) as a new field to WooCommerce checkout and order details, if the billing address is from Angola.
- * Version: 5.3
+ * Version: 1.0.0
  * Author: Edgar Muniz Berlinck
- * Author URI: http://edgarberlinck.github.io
+ * Author URI: http://edgarberlinck.github.io/
  * Text Domain: nif-num-de-contribuinte-angola-for-woocommerce
  * Domain Path: /lang
  * Requires at least: 5.0
