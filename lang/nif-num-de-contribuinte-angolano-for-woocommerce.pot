@@ -1,7 +1,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: NIF (Num. de Contribuinte Português) for WooCommerce\n"
+"Project-Id-Version: NIF (Num. de Contribuinte Angolano) for WooCommerce\n"
 "POT-Creation-Date: 2022-09-20 13:58+0100\n"
 "PO-Revision-Date: 2017-03-27 15:01+0100\n"
 "Last-Translator: \n"
@@ -43,33 +43,32 @@ msgstr ""
 #: woocommerce_nif.php:63 woocommerce_nif.php:105 woocommerce_nif.php:129
 #: woocommerce_nif.php:144 woocommerce_nif.php:157 woocommerce_nif.php:196
 #: woocommerce_nif.php:223
-msgid "NIF / NIPC"
+msgid "NIF"
 msgstr ""
 
 #: woocommerce_nif.php:64 woocommerce_nif.php:130
-msgid "Portuguese VAT identification number"
+msgid "Angola VAT identification number"
 msgstr ""
 
 #: woocommerce_nif.php:196 woocommerce_nif.php:223
 #, php-format
-msgid "You have entered an invalid %s for Portugal."
+msgid "You have entered an invalid %s for Angola."
 msgstr ""
 
 #. Plugin Name of the plugin/theme
-msgid "NIF (Num. de Contribuinte Português) for WooCommerce"
+msgid "NIF (Num. de Contribuinte Angolano) for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
 msgid ""
-"https://www.webdados.pt/wordpress/plugins/nif-de-contribuinte-portugues-"
-"woocommerce-wordpress/"
+"https://github.com/edgarberlinck/nif-num-de-contribuinte-angolano-for-woocommerce"
 msgstr ""
 
 #. Description of the plugin/theme
 msgid ""
-"This plugin adds the Portuguese VAT identification number (NIF/NIPC) as a "
+"This plugin adds the Angola VAT identification number (NIF) as a "
 "new field to WooCommerce checkout and order details, if the billing address "
-"is from Portugal."
+"is from Angola."
 msgstr ""
 
 #. Author of the plugin/theme
@@ -77,5 +76,5 @@ msgid "PT Woo Plugins (by Webdados)"
 msgstr ""
 
 #. Author URI of the plugin/theme
-msgid "https://ptwooplugins.com"
+msgid "https://beacons.ai/edgarberlinck"
 msgstr ""

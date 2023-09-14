@@ -17,7 +17,7 @@ jQuery(
 				'#billing_country',
 				function() {
 					var country = $( '#billing_country' ).val();
-					if ( country == 'PT' ) {
+					if ( country == 'AO' ) {
 						if ( nif_container.is( ':hidden' ) ) {
 							nif_container.show();
 							if ( current_nif != '' ) {
