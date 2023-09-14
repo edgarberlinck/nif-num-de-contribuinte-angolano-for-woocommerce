@@ -9,7 +9,6 @@ jQuery(
 		var current_nif   = '';
 		var nif_input     = $( '#billing_nif' );
 		var nif_container = nif_input.closest( '.form-row' )
-
 		// Only for Angola?
 		if ( woocommerce_nif.show_all_countries == 0 ) {
 			checkout_form.on(
@@ -17,6 +16,7 @@ jQuery(
 				'#billing_country',
 				function() {
 					var country = $( '#billing_country' ).val();
+
 					if ( country == 'AO' ) {
 						if ( nif_container.is( ':hidden' ) ) {
 							nif_container.show();

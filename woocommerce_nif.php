@@ -69,13 +69,7 @@ add_action(
 					'label'        => apply_filters( 'woocommerce_nif_field_label', __( 'NIF', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ),
 					'placeholder'  => apply_filters( 'woocommerce_nif_field_placeholder', __( 'Aponte o NIF da sua Empresa', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ),
 					'class'        => apply_filters( 'woocommerce_nif_field_class', array( 'form-row-first' ) ), // Should be an option (?)
-					'required'     => (
-											( $country === 'AO' ) || ( apply_filters( 'woocommerce_nif_show_all_countries', false ) )
-											?
-											apply_filters( 'woocommerce_nif_field_required', false ) // Should be an option (?)
-											:
-											false
-										),
+					'required'     => apply_filters( 'woocommerce_nif_field_required', false ),
 					'clear'        => apply_filters( 'woocommerce_nif_field_clear', true ), // Should be an option (?)
 					'autocomplete' => apply_filters( 'woocommerce_nif_field_autocomplete', 'on' ),
 					'priority'     => apply_filters( 'woocommerce_nif_field_priority', 120 ), // WooCommerce should order by this parameter but it doesn't seem to be doing so
@@ -226,35 +220,24 @@ add_action(
 			 * Validation - Checkout
 			 */
 			function woocommerce_nif_checkout_process() {
-				if ( apply_filters( 'woocommerce_nif_field_validate', false ) ) {
-					$customer_country = WC()->customer->get_billing_country();
-					$countries        = new WC_Countries();
-					// If the field is NOT required and it's empty, we shouldn't validate it
-					if ( $customer_country === 'AO' || ( $customer_country === '' && $countries->get_base_country() === 'AO' ) ) {
-						$billing_nif = wc_clean( isset( $_POST['billing_nif'] ) ? $_POST['billing_nif'] : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, (because wc_clean takes care of it)
-						if (
-							!
-							(
-								woocommerce_valida_nif( $billing_nif )
-								||
-								( trim( $billing_nif ) === '' && ! apply_filters( 'woocommerce_nif_field_required', false ) )
+				global $woocommerce;
+				$customer_id = get_current_user_id();
+				$billing_nif = wc_clean( isset( $_POST['billing_nif'] ) ? $_POST['billing_nif'] : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, (because wc_clean takes care of it)
+
+				if ( apply_filters( 'woocommerce_nif_field_validate', false ) && !woocommerce_valida_nif( $billing_nif )) {	
+					wc_add_notice(
+						/* translators: %s NIF field name */
+						sprintf( __( 'Você informou um %s Angolano inválido.', 'nif-num-de-contribuinte-angolano-for-woocommerce' ), '<strong>' . apply_filters( 'woocommerce_nif_field_label', __( 'NIF', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ) . '</strong>' ),
+						'error',
+						array(
+							'id' => 'billing_nif',
 							)
-						) {
-							wc_add_notice(
-								/* translators: %s NIF field name */
-								sprintf( __( 'Você informou um %s Angolano inválido.', 'nif-num-de-contribuinte-angolano-for-woocommerce' ), '<strong>' . apply_filters( 'woocommerce_nif_field_label', __( 'NIF / NIPC', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ) . '</strong>' ),
-								'error',
-								array(
-									'id' => 'billing_nif',
-								)
-							);
-						}
-					} //else {
-						// Not Portugal
-					// }
-				} //else {
-					// All good - No validation required
-				// }
+						);
+				} else {
+					$cust = new WC_Customer($customer_id);
+					$cust->update_meta_data('billing_nif', $billing_nif);
+					$cust->save();
+				} 
 			}
 			add_action( 'woocommerce_checkout_process', 'woocommerce_nif_checkout_process' );
 
@@ -266,29 +249,26 @@ add_action(
 			 * @param array  $address      The address fields.
 			 */
 			function woocommerce_nif_after_save_address_validation( $user_id, $load_address, $address ) {
-				if ( $load_address === 'billing' ) {
-					if ( apply_filters( 'woocommerce_nif_field_validate', false ) ) {
-						$country = wc_clean( isset( $_POST['billing_country'] ) ? $_POST['billing_country'] : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, (because wc_clean takes care of it)
-						if ( $country === 'AO' ) {
-							$billing_nif = wc_clean( isset( $_POST['billing_nif'] ) ? $_POST['billing_nif'] : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, (because wc_clean takes care of it)
-							// If the field is NOT required and it's empty, we shouldn't validate it
-							if (
-								!
-								(
-									woocommerce_valida_nif( $billing_nif )
-									||
-									( trim( $billing_nif ) === '' && ! apply_filters( 'woocommerce_nif_field_required', false ) )
-								)
-							) {
-								wc_add_notice(
-									/* translators: %s NIF field name */
-									sprintf( __( 'Você informaou um %s Angolano inválido.', 'nif-num-de-contribuinte-angolano-for-woocommerce' ), '<strong>' . apply_filters( 'woocommerce_nif_field_label', __( 'NIF / NIPC', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ) . '</strong>' ),
-									'error'
-								);
-							}
-						}
+				// if ( $load_address === 'billing' ) {
+				if ( apply_filters( 'woocommerce_nif_field_validate', false ) ) {
+					$billing_nif = wc_clean( isset( $_POST['billing_nif'] ) ? $_POST['billing_nif'] : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, (because wc_clean takes care of it)
+					// If the field is NOT required and it's empty, we shouldn't validate it
+					if (
+						!
+						(
+							woocommerce_valida_nif( $billing_nif )
+							||
+							( trim( $billing_nif ) === '' && ! apply_filters( 'woocommerce_nif_field_required', false ) )
+						)
+					) {
+						wc_add_notice(
+							/* translators: %s NIF field name */
+							sprintf( __( 'Você informaou um %s Angolano inválido.' , 'nif-num-de-contribuinte-angolano-for-woocommerce' ), '<strong>' . apply_filters( 'woocommerce_nif_field_label', __( 'NIF', 'nif-num-de-contribuinte-angolano-for-woocommerce' ) ) . '</strong>' ),
+							'error'
+						);
 					}
 				}
+				// }
 			}
 			add_action( 'woocommerce_after_save_address_validation', 'woocommerce_nif_after_save_address_validation', 10, 3 );
 
@@ -303,7 +283,6 @@ add_action(
 				$valid_len = array(10, 14);
 
 				return in_array($len, $valid_len);
-				
 			}
 		}
 	}
