@@ -318,22 +318,3 @@ add_action(
 		}
 	}
 );
-
-// /* InvoiceXpress nag */
-// add_action(
-// 	'admin_init',
-// 	function() {
-// 		if (
-// 		( ! defined( 'WEBDADOS_INVOICEXPRESS_NAG' ) )
-// 		&&
-// 		( ! class_exists( '\Webdados\InvoiceXpressWooCommerce\Plugin' ) )
-// 		&&
-// 		empty( get_transient( 'webdados_invoicexpress_nag' ) )
-// 		) {
-// 			define( 'WEBDADOS_INVOICEXPRESS_NAG', true );
-// 			require_once 'webdados_invoicexpress_nag/webdados_invoicexpress_nag.php';
-// 		}
-// 	}
-// );
-
-/* If you're reading this you must know what you're doing ;-) Greetings from sunny Portugal! */
